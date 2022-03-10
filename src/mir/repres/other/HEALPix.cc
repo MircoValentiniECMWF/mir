@@ -14,7 +14,7 @@
 
 #include <ostream>
 
-// #include "mir/param/MIRParametrisation.h"
+#include "mir/param/MIRParametrisation.h"
 #include "mir/repres/Iterator.h"
 #include "mir/util/Exceptions.h"
 #include "mir/util/Log.h"
@@ -26,19 +26,31 @@ namespace repres {
 namespace other {
 
 
-HEALPix::HEALPix(const param::MIRParametrisation&) {
-    NOTIMP;
+static const RepresentationBuilder<HEALPix> unstructured_grid("healpix");
+
+
+HEALPix::HEALPix(const param::MIRParametrisation& param) : N_(0) {
+    param.get("N", N_);
+    ASSERT(N_ > 0);
+
+    param.get("orderingConvention", orderingConvention_);
+    ASSERT(!orderingConvention_.empty());
 }
 
 
 const atlas::Grid& HEALPix::atlasGridRef() const {
-    return grid_ ? grid_ : (grid_ = atlas::Grid({/*spec_*/}));
+    return grid_ ? grid_ : (grid_ = {name()});
+}
+
+
+std::string HEALPix::name() const {
+    return "H" + std::to_string(N_);
 }
 
 
 bool HEALPix::sameAs(const Representation& other) const {
     const auto* o = dynamic_cast<const HEALPix*>(&other);
-    return (o != nullptr);  // FIXME && spec_.getString("uid") == o->spec_.getString("uid");
+    return (o != nullptr) && N_ == o->N_ && orderingConvention_ == o->orderingConvention_;
 }
 
 
@@ -58,14 +70,7 @@ size_t HEALPix::numberOfPoints() const {
 
 
 void HEALPix::makeName(std::ostream& out) const {
-    NOTIMP;
-#if 0
-    const auto* sep = "";
-    for (const auto& key : grib_keys) {
-        out << sep << spec_.getString(key.first);
-        sep = "_";
-    }
-#endif
+    out << name();
 }
 
 
@@ -76,7 +81,7 @@ void HEALPix::fill(grib_info& info) const {
 
 void HEALPix::fill(util::MeshGeneratorParameters& params) const {
     if (params.meshGenerator_.empty()) {
-        params.meshGenerator_ = "HEALPix";
+        params.meshGenerator_ = "healpix";
     }
 }
 

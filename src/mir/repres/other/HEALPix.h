@@ -60,10 +60,13 @@ private:
     // -- Members
 
     mutable atlas::Grid grid_;
+    size_t N_;
+    std::string orderingConvention_;
 
     // -- Methods
 
     const atlas::Grid& atlasGridRef() const;
+    std::string name() const;
 
     // -- Overridden methods
 
