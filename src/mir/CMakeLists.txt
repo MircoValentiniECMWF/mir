@@ -524,6 +524,8 @@ list(APPEND mir_srcs
     repres/latlon/RotatedLL.h
     repres/other/ClenshawCurtis.cc
     repres/other/ClenshawCurtis.h
+    repres/other/HEALPix.cc
+    repres/other/HEALPix.h
     repres/other/None.cc
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
