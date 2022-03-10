@@ -785,6 +785,8 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
+        repres/atlas/Atlas.cc
+        repres/atlas/Atlas.h
         repres/atlas/HEALPix.cc
         repres/atlas/HEALPix.h
         repres/atlas/ORCA.cc

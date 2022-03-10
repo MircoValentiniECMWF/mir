@@ -12,10 +12,12 @@
 
 #pragma once
 
-#include <string>
+#include "mir/repres/Gridded.h"
 
-#include "mir/repres/atlas/Atlas.h"
-#include "mir/util/Atlas.h"
+
+namespace atlas {
+class Grid;
+}
 
 
 namespace mir {
@@ -23,27 +25,25 @@ namespace repres {
 namespace atlas {
 
 
-class ORCA final : public Atlas {
+class Atlas : public Gridded {
 public:
     // -- Exceptions
     // None
 
     // -- Constructors
 
-    ORCA(const std::string& uid);
-    ORCA(const param::MIRParametrisation&);
-    ORCA(const ORCA&) = delete;
+    Atlas(const Atlas&) = delete;
 
     // -- Destructor
 
-    ~ORCA() override;
+    ~Atlas() = default;
 
     // -- Convertors
     // None
 
     // -- Operators
 
-    ORCA& operator=(const ORCA&) = delete;
+    Atlas& operator=(const Atlas&) = delete;
 
     // -- Methods
     // None
@@ -57,27 +57,45 @@ public:
     // -- Class methods
     // None
 
-private:
-    // -- Members
+protected:
+    // -- Constructors
 
-    const ::atlas::Grid::Spec spec_;
-    mutable ::atlas::Grid grid_;
+    Atlas() = default;
+
+    // -- Members
+    // None
 
     // -- Methods
 
-    const ::atlas::Grid& atlasGridRef() const override;
+    virtual const ::atlas::Grid& atlasGridRef() const = 0;
+
+    // -- Overridden methods
+    // None
+
+    // -- Class members
+    // None
+
+    // -- Class methods
+    // None
+
+private:
+    // -- Members
+    // None
+
+    // -- Methods
+    // None
 
     // -- Overridden methods
 
     // from Representation
-    bool sameAs(const Representation&) const override;
-    void makeName(std::ostream&) const override;
+    void validate(const MIRValuesVector&) const override;
+    size_t numberOfPoints() const override;
 
-    void fill(grib_info&) const override;
-    void fill(util::MeshGeneratorParameters&) const override;
+    bool includesNorthPole() const override { return true; }
+    bool includesSouthPole() const override { return true; }
+    bool isPeriodicWestEast() const override { return true; }
 
-    ::atlas::Grid atlasGrid() const override;
-    void print(std::ostream&) const override;
+    Iterator* iterator() const override;
 
     // -- Class members
     // None

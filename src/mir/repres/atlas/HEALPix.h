@@ -14,7 +14,7 @@
 
 #include <string>
 
-#include "mir/repres/Gridded.h"
+#include "mir/repres/atlas/Atlas.h"
 #include "mir/util/Atlas.h"
 
 
@@ -23,7 +23,7 @@ namespace repres {
 namespace atlas {
 
 
-class HEALPix final : public Gridded {
+class HEALPix final : public Atlas {
 public:
     // -- Types
     // None
@@ -72,18 +72,11 @@ private:
 
     // from Representation
     bool sameAs(const Representation&) const override;
-    void validate(const MIRValuesVector&) const override;
-    size_t numberOfPoints() const override;
     void makeName(std::ostream&) const override;
 
     void fill(grib_info&) const override;
     void fill(util::MeshGeneratorParameters&) const override;
 
-    bool includesNorthPole() const override { return true; }
-    bool includesSouthPole() const override { return true; }
-    bool isPeriodicWestEast() const override { return true; }
-
-    Iterator* iterator() const override;
     ::atlas::Grid atlasGrid() const override;
     void print(std::ostream&) const override;
 
