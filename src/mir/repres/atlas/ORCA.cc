@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/repres/other/ORCA.h"
+#include "mir/repres/atlas/ORCA.h"
 
 #include <ostream>
 #include <utility>
@@ -28,7 +28,7 @@
 
 namespace mir {
 namespace repres {
-namespace other {
+namespace atlas {
 
 
 // order is important for makeName()
@@ -37,7 +37,7 @@ static const std::vector<std::pair<std::string, std::string>> grib_keys{
 
 
 ORCA::ORCA(const std::string& uid) :
-    Gridded(util::BoundingBox() /*assumed global*/), spec_(atlas::grid::SpecRegistry::get(uid)) {}
+    Gridded(util::BoundingBox() /*assumed global*/), spec_(::atlas::grid::SpecRegistry::get(uid)) {}
 
 
 ORCA::ORCA(const param::MIRParametrisation& param) :
@@ -158,12 +158,12 @@ Iterator* ORCA::iterator() const {
 }
 
 
-const atlas::Grid& ORCA::atlasGridRef() const {
-    return grid_ ? grid_ : (grid_ = atlas::Grid(spec_));
+const ::atlas::Grid& ORCA::atlasGridRef() const {
+    return grid_ ? grid_ : (grid_ = ::atlas::Grid(spec_));
 }
 
 
-atlas::Grid ORCA::atlasGrid() const {
+::atlas::Grid ORCA::atlasGrid() const {
     return atlasGridRef();
 }
 
@@ -175,6 +175,6 @@ void ORCA::fill(util::MeshGeneratorParameters& params) const {
 }
 
 
-}  // namespace other
+}  // namespace atlas
 }  // namespace repres
 }  // namespace mir

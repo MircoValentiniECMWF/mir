@@ -20,7 +20,7 @@
 
 namespace mir {
 namespace repres {
-namespace other {
+namespace atlas {
 
 
 class HEALPix final : public Gridded {
@@ -59,13 +59,13 @@ public:
 private:
     // -- Members
 
-    mutable atlas::Grid grid_;
+    mutable ::atlas::Grid grid_;
     size_t N_;
     std::string orderingConvention_;
 
     // -- Methods
 
-    const atlas::Grid& atlasGridRef() const;
+    const ::atlas::Grid& atlasGridRef() const;
     std::string name() const;
 
     // -- Overridden methods
@@ -84,7 +84,7 @@ private:
     bool isPeriodicWestEast() const override { return true; }
 
     Iterator* iterator() const override;
-    atlas::Grid atlasGrid() const override;
+    ::atlas::Grid atlasGrid() const override;
     void print(std::ostream&) const override;
 
     // -- Class members
@@ -98,6 +98,6 @@ private:
 };
 
 
-}  // namespace other
+}  // namespace atlas
 }  // namespace repres
 }  // namespace mir

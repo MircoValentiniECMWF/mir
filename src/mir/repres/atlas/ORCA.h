@@ -20,7 +20,7 @@
 
 namespace mir {
 namespace repres {
-namespace other {
+namespace atlas {
 
 
 class ORCA : public Gridded {
@@ -78,12 +78,12 @@ protected:
 private:
     // -- Members
 
-    const atlas::Grid::Spec spec_;
-    mutable atlas::Grid grid_;
+    const ::atlas::Grid::Spec spec_;
+    mutable ::atlas::Grid grid_;
 
     // -- Methods
 
-    const atlas::Grid& atlasGridRef() const;
+    const ::atlas::Grid& atlasGridRef() const;
 
     // -- Overridden methods
 
@@ -101,7 +101,7 @@ private:
     bool isPeriodicWestEast() const override { return true; }
 
     Iterator* iterator() const override;
-    atlas::Grid atlasGrid() const override;
+    ::atlas::Grid atlasGrid() const override;
 
     // -- Class members
     // None
@@ -114,6 +114,6 @@ private:
 };
 
 
-}  // namespace other
+}  // namespace atlas
 }  // namespace repres
 }  // namespace mir

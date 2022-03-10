@@ -68,7 +68,7 @@ protected:
     // -- Members
 
     Point2 point_;
-    atlas::util::Rotation rotation_;
+    ::atlas::util::Rotation rotation_;
     bool valid_;
 
     // -- Methods

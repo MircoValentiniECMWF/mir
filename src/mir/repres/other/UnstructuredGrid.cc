@@ -40,7 +40,7 @@
 
 #if defined(mir_HAVE_ATLAS)
 #include "mir/key/grid/ORCAPattern.h"
-#include "mir/repres/other/ORCA.h"
+#include "mir/repres/atlas/ORCA.h"
 #endif
 
 
@@ -190,17 +190,17 @@ util::Domain UnstructuredGrid::domain() const {
 }
 
 
-atlas::Grid UnstructuredGrid::atlasGrid() const {
+::atlas::Grid UnstructuredGrid::atlasGrid() const {
     ASSERT(numberOfPoints());
 
-    std::vector<atlas::PointXY> pts;
+    std::vector<::atlas::PointXY> pts;
     pts.reserve(numberOfPoints());
 
     for (size_t i = 0; i < numberOfPoints(); ++i) {
-        pts.emplace_back(atlas::PointXY(longitudes_[i], latitudes_[i]));
+        pts.emplace_back(::atlas::PointXY(longitudes_[i], latitudes_[i]));
     }
 
-    return atlas::UnstructuredGrid(std::move(pts));
+    return ::atlas::UnstructuredGrid(std::move(pts));
 }
 
 
@@ -306,7 +306,7 @@ Representation* RepresentationBuilder<other::UnstructuredGrid>::make(const param
     std::string grid;
     if (param.get("grid", grid)) {
         if (!key::grid::ORCAPattern::match(grid, param).empty()) {
-            return new other::ORCA(param);
+            return new atlas::ORCA(param);
         }
     }
 #endif

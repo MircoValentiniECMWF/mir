@@ -10,7 +10,7 @@
  */
 
 
-#include "mir/repres/other/HEALPix.h"
+#include "mir/repres/atlas/HEALPix.h"
 
 #include <ostream>
 
@@ -23,7 +23,7 @@
 
 namespace mir {
 namespace repres {
-namespace other {
+namespace atlas {
 
 
 static const RepresentationBuilder<HEALPix> unstructured_grid("healpix");
@@ -38,7 +38,7 @@ HEALPix::HEALPix(const param::MIRParametrisation& param) : N_(0) {
 }
 
 
-const atlas::Grid& HEALPix::atlasGridRef() const {
+const ::atlas::Grid& HEALPix::atlasGridRef() const {
     return grid_ ? grid_ : (grid_ = {name()});
 }
 
@@ -147,7 +147,7 @@ Iterator* HEALPix::iterator() const {
 }
 
 
-atlas::Grid HEALPix::atlasGrid() const {
+::atlas::Grid HEALPix::atlasGrid() const {
     return atlasGridRef();
 }
 
@@ -157,6 +157,6 @@ void HEALPix::print(std::ostream& out) const {
 }
 
 
-}  // namespace other
+}  // namespace atlas
 }  // namespace repres
 }  // namespace mir

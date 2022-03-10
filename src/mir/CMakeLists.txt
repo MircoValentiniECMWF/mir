@@ -524,8 +524,6 @@ list(APPEND mir_srcs
     repres/latlon/RotatedLL.h
     repres/other/ClenshawCurtis.cc
     repres/other/ClenshawCurtis.h
-    repres/other/HEALPix.cc
-    repres/other/HEALPix.h
     repres/other/None.cc
     repres/other/None.h
     repres/other/UnstructuredGrid.cc
@@ -787,8 +785,10 @@ if(mir_HAVE_ATLAS)
         method/structured/StructuredMethod.h
         output/GmshOutput.cc
         output/GmshOutput.h
-        repres/other/ORCA.cc
-        repres/other/ORCA.h
+        repres/atlas/HEALPix.cc
+        repres/atlas/HEALPix.h
+        repres/atlas/ORCA.cc
+        repres/atlas/ORCA.h
         stats/statistics/Integral.cc
         stats/statistics/Integral.h)
 else()

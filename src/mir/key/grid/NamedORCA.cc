@@ -14,7 +14,7 @@
 
 #include <ostream>
 
-#include "mir/repres/other/ORCA.h"
+#include "mir/repres/atlas/ORCA.h"
 #include "mir/util/Exceptions.h"
 
 
@@ -32,7 +32,7 @@ void NamedORCA::print(std::ostream& out) const {
 
 
 const repres::Representation* NamedORCA::representation() const {
-    return new repres::other::ORCA(key_);
+    return new repres::atlas::ORCA(key_);
 }
 
 
