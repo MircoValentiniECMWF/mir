@@ -55,13 +55,13 @@ Iterator* Atlas::iterator() const {
         decltype(lonlat_)::iterator::value_type p_;
 
         const size_t total_;
-        size_t count_;
+        size_t index_;
         bool first_;
 
         void print(std::ostream& out) const override {
             out << "AtlasIterator[";
             Iterator::print(out);
-            out << ",count=" << count_ << ",total=" << total_ << "]";
+            out << ",count=" << index_ << ",total=" << total_ << "]";
         }
 
         bool next(Latitude& _lat, Longitude& _lon) override {
@@ -75,17 +75,17 @@ Iterator* Atlas::iterator() const {
                     first_ = false;
                 }
                 else {
-                    count_++;
+                    index_++;
                 }
 
                 return true;
             }
 
-            ASSERT(count_ == total_);
+            ASSERT(first_ || index_ == (total_ - 1));
             return false;
         }
 
-        size_t index() const override { return count_; }
+        size_t index() const override { return index_; }
 
     public:
         AtlasIterator(::atlas::Grid grid) :
@@ -93,7 +93,7 @@ Iterator* Atlas::iterator() const {
             lonlat_(grid.lonlat()),
             it_(lonlat_.begin()),
             total_(size_t(grid.size())),
-            count_(0),
+            index_(0),
             first_(true) {}
 
         ~AtlasIterator() override = default;

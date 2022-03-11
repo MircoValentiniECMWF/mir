@@ -64,7 +64,7 @@ void HEALPix::fill(grib_info& info) const {
 
 void HEALPix::fill(util::MeshGeneratorParameters& params) const {
     if (params.meshGenerator_.empty()) {
-        params.meshGenerator_ = "healpix";
+        params.meshGenerator_ = "structured";
     }
 }
 
