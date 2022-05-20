@@ -31,6 +31,11 @@ foreach(_t
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 endforeach()
 
+ecbuild_add_executable(TARGET mir_tests_unit_grib_nearest SOURCES grib_nearest.cc LIBS mir NOINSTALL)
+
+ecbuild_add_test(TARGET mir_tests_unit_grib_nearest_O32.grib1 COMMAND mir_tests_unit_grib_nearest ARGS O32.grib1 O32.yaml ENVIRONMENT ${_testEnvironment} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+ecbuild_add_test(TARGET mir_tests_unit_grib_nearest_O32.grib2 COMMAND mir_tests_unit_grib_nearest ARGS O32.grib2 O32.yaml ENVIRONMENT ${_testEnvironment} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
 if(mir_HAVE_ATLAS)
     ecbuild_add_test(
         TARGET            mir_tests_unit_atlas
