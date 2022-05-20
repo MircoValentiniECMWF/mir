@@ -42,17 +42,15 @@ namespace unit {
 
 struct GribNearest : tools::MIRTool {
     GribNearest(int argc, char** argv) : MIRTool(argc, argv) {
-        options_.push_back(new eckit::option::SimpleOption<bool>("dont-assert", "Don't assert when checking test"));
-        options_.push_back(
-            new eckit::option::SimpleOption<bool>("dont-check-multiple", "Disable checking for multiple matches"));
+        options_.push_back(new eckit::option::SimpleOption<bool>("dont-assert", "Don't assert when testing"));
     }
 
-    int minimumPositionalArguments() const override { return 2; }
+    int numberOfPositionalArguments() const override { return 2; }
 
     void usage(const std::string& tool) const override {
         Log::info() << "\n"
                        "Usage: "
-                    << tool << " input.grib tests.yaml" << std::endl;
+                    << tool << " input.grib tests.yaml [--dont-assert]" << std::endl;
     }
 
     void execute(const eckit::option::CmdArgs& args) override {
