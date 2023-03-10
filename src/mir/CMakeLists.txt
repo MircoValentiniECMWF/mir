@@ -613,7 +613,6 @@ list(APPEND mir_srcs
     tools/MIRTool.cc
     tools/MIRTool.h
     util/Angles.h
-    util/AreaCropperMapping.h
     util/Atlas.h
     util/Bitmap.cc
     util/Bitmap.h
@@ -652,6 +651,7 @@ list(APPEND mir_srcs
     util/GridBox.h
     util/Increments.cc
     util/Increments.h
+    util/IndexMapping.h
     util/Latitude.cc
     util/Latitude.h
     util/LatitudeIncrement.h
