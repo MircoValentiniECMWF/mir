@@ -16,6 +16,8 @@ list(APPEND mir_srcs
 
     ${CMAKE_CURRENT_BINARY_DIR}/api/mir_version.cc
 
+    action/area/AreaCropper.cc
+    action/area/AreaCropper.h
     action/calc/FormulaAction.cc
     action/calc/FormulaAction.h
     action/context/Context.cc
@@ -92,8 +94,6 @@ list(APPEND mir_srcs
     action/io/Save.h
     action/io/Set.cc
     action/io/Set.h
-    action/misc/AreaCropper.cc
-    action/misc/AreaCropper.h
     action/misc/CheckerBoard.cc
     action/misc/CheckerBoard.h
     action/misc/Noop.cc
