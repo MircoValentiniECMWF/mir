@@ -294,7 +294,6 @@ static const char* get_key(const std::string& name, grib_handle* h) {
         {"south", "latitudeOfLastGridPointInDegrees"},
 
         {"truncation", "pentagonalResolutionParameterJ"},  // Assumes triangular truncation
-        {"accuracy", "bitsPerValue"},
 
         {"south_pole_latitude", "latitudeOfSouthernPoleInDegrees"},
         {"south_pole_longitude", "longitudeOfSouthernPoleInDegrees"},
