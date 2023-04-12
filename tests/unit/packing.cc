@@ -53,7 +53,7 @@ CASE("Packing") {
 
 
     auto check_packing_edition_bits = [](const grib::Packing& pack, const std::string& packing = "", long edition = 0,
-                                         long bits = 0, long precision = 0) {
+                                         long bits = 0) {
         std::ostringstream str;
         pack.printParametrisation(str);
         const auto calculated = "Packing[" + str.str() + "]";
@@ -65,7 +65,6 @@ CASE("Packing") {
         std::string expected(packing.empty() ? "" : ("packing=" + packing));
         expected += app(expected, "edition", edition);
         expected += app(expected, "accuracy", bits);
-        expected += app(expected, "precision", precision);
         expected = "Packing[" + expected + "]";
 
         Log::info() << expected << " (expected)\n" << calculated << " (calculated)" << std::endl;
@@ -130,13 +129,13 @@ CASE("Packing") {
 
                 if (accuracy == 32) {
                     std::unique_ptr<grib::Packing> pack(grib::Packing::build(*Combine(job, field.second).param));
-                    check_packing_edition_bits(*pack, "ieee", 0, 32, 1);
+                    check_packing_edition_bits(*pack, "ieee", 0, 32);
                     continue;
                 }
 
                 if (accuracy == 64) {
                     std::unique_ptr<grib::Packing> pack(grib::Packing::build(*Combine(job, field.second).param));
-                    check_packing_edition_bits(*pack, "ieee", 0, 64, 2);
+                    check_packing_edition_bits(*pack, "ieee", 0, 64);
                     continue;
                 }
 

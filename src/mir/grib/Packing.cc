@@ -103,12 +103,7 @@ bool Packing::printParametrisation(std::ostream& out) const {
     }
 
     if (defineBitsPerValue_) {
-        out << sep << "accuracy=" << bitsPerValue_;
-        sep = ",";
-    }
-
-    if (definePrecision_) {
-        out << sep << "precision=" << precision_;
+        out << sep << "accuracy=" << accuracy_;
         sep = ",";
     }
 
