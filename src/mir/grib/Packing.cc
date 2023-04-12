@@ -40,52 +40,39 @@ void check(bool ok, const std::string& message) {
 
 
 Packing::Packing(const std::string& name, const param::MIRParametrisation& param) :
-    bitsPerValue_(0),
-    precision_(0),
-    definePrecision_(false),
     gridded_(param.userParametrisation().has("grid") || param.fieldParametrisation().has("gridded")) {
-    const auto& user  = param.userParametrisation();
     const auto& field = param.fieldParametrisation();
 
     ASSERT(!name.empty());
     packing_ = name;
-    std::string packing;
 
     bool gridded = false;
     field.get("gridded", gridded);
 
-    definePacking_                   = !field.get("packing", packing) || packing_ != packing || gridded_ != gridded;
-    defineBitsPerValueBeforePacking_ = definePacking_ && packing == "ieee";
+    std::string packing;
+    definePacking_ = !field.get("packing", packing) || packing_ != packing || gridded_ != gridded;
 
-    defineBitsPerValue_ = false;
-    if (defineBitsPerValueBeforePacking_) {
-        ASSERT(param.get("accuracy", bitsPerValue_));
-        defineBitsPerValue_ = true;
-    }
-    else if (user.get("accuracy", bitsPerValue_)) {
-        long accuracy       = 0;
-        defineBitsPerValue_ = !field.get("accuracy", accuracy) || bitsPerValue_ != accuracy;
-    }
+    long accuracy = 0;
+    param.get("accuracy", accuracy_ = field.get("accuracy", accuracy) ? accuracy : 0);
+    defineAccuracy_ = accuracy_ > 0 && accuracy_ != accuracy;
 
     long edition = 0;
     param.get("edition", edition_ = field.get("edition", edition) ? 0 : 2);
-
     defineEdition_ = edition_ > 0 && edition_ != edition;
 }
 
 
 bool Packing::sameAs(const Packing* other) const {
-    if (definePacking_ != other->definePacking_ || defineBitsPerValue_ != other->defineBitsPerValue_ ||
-        defineEdition_ != other->defineEdition_ || definePrecision_ != other->definePrecision_) {
+    if (definePacking_ != other->definePacking_ || defineAccuracy_ != other->defineAccuracy_ ||
+        defineEdition_ != other->defineEdition_) {
         return false;
     }
 
-    bool samePacking   = !definePacking_ || packing_ == other->packing_;
-    bool sameAccuracy  = !defineBitsPerValue_ || bitsPerValue_ == other->bitsPerValue_;
-    bool sameEdition   = !defineEdition_ || edition_ == other->edition_;
-    bool sameprecision = !definePrecision_ || precision_ == other->precision_;
+    bool samePacking  = !definePacking_ || packing_ == other->packing_;
+    bool sameAccuracy = !defineAccuracy_ || accuracy_ == other->accuracy_;
+    bool sameEdition  = !defineEdition_ || edition_ == other->edition_;
 
-    return samePacking && sameAccuracy && sameEdition && sameprecision;
+    return samePacking && sameAccuracy && sameEdition;
 }
 
 
@@ -102,7 +89,7 @@ bool Packing::printParametrisation(std::ostream& out) const {
         sep = ",";
     }
 
-    if (defineBitsPerValue_) {
+    if (defineAccuracy_) {
         out << sep << "accuracy=" << accuracy_;
         sep = ",";
     }
@@ -112,7 +99,7 @@ bool Packing::printParametrisation(std::ostream& out) const {
 
 
 bool Packing::empty() const {
-    return !definePacking_ && !defineBitsPerValue_ && !defineEdition_ && !definePrecision_;
+    return !definePacking_ && !defineAccuracy_ && !defineEdition_;
 }
 
 
@@ -126,30 +113,22 @@ void Packing::fill(grib_info& info, long pack) const {
         info.packing.packing_type = pack;
     }
 
-    if (defineBitsPerValue_ && !definePrecision_) {
+    if (defineAccuracy_) {
         info.packing.accuracy     = CODES_UTIL_ACCURACY_USE_PROVIDED_BITS_PER_VALUES;
-        info.packing.bitsPerValue = bitsPerValue_;
+        info.packing.bitsPerValue = accuracy_;
     }
 
     if (defineEdition_) {
         info.packing.editionNumber = edition_;
     }
-
-    if (definePrecision_) {
-        info.extra_set("precision", precision_);
-    }
 }
 
 
 void Packing::set(grib_handle* h, const std::string& type) const {
-    // Note: order is important, it is not applicable to all packing's.
+    // Note: order is important
 
     if (defineEdition_) {
         GRIB_CALL(codes_set_long(h, "edition", edition_));
-    }
-
-    if (defineBitsPerValueBeforePacking_) {
-        GRIB_CALL(codes_set_long(h, "bitsPerValue", bitsPerValue_));
     }
 
     if (definePacking_) {
@@ -157,11 +136,8 @@ void Packing::set(grib_handle* h, const std::string& type) const {
         GRIB_CALL(codes_set_string(h, "packingType", type.c_str(), &len));
     }
 
-    if (definePrecision_) {
-        GRIB_CALL(codes_set_long(h, "precision", precision_));
-    }
-    else if (defineBitsPerValue_) {
-        GRIB_CALL(codes_set_long(h, "bitsPerValue", bitsPerValue_));
+    if (defineAccuracy_) {
+        GRIB_CALL(codes_set_long(h, "accuracy", accuracy_));
     }
 }
 
@@ -212,34 +188,39 @@ struct Complex : Packing {
 
 struct IEEE : Packing {
     IEEE(const std::string& name, const param::MIRParametrisation& param) : Packing(name, param) {
-        constexpr long L32  = 32;
-        constexpr long L64  = 64;
-        constexpr long L128 = 128;
-
         // Accuracy set by user, otherwise by field (rounded up to a supported precision)
-        long bits = L32;
-        param.fieldParametrisation().get("accuracy", bits);
+        long accuracy = 0;
+        param.fieldParametrisation().get("accuracy", accuracy);
 
-        if (!param.userParametrisation().get("accuracy", bitsPerValue_)) {
-            bitsPerValue_ = bits <= L32 ? L32 : bits <= L64 ? L64 : L128;
+        accuracy_ = accuracy <= 32L ? 32L : accuracy <= 64L ? 64L : 128L;
+        if (param.userParametrisation().get("accuracy", accuracy_)) {
+            precision(accuracy_);  // check
         }
 
-        definePrecision_ = bitsPerValue_ != bits || definePacking_ || !param.fieldParametrisation().has("accuracy");
-        precision_       = bitsPerValue_ == L32 ? 1 : bitsPerValue_ == L64 ? 2 : bitsPerValue_ == L128 ? 3 : 0;
+        defineAccuracy_ = accuracy_ != accuracy;
+    }
 
-        if (precision_ == 0) {
-            std::string msg = "packing=ieee: only supports accuracy=32, 64 and 128";
-            Log::error() << msg << std::endl;
-            throw exception::UserError(msg);
-        }
+    static long precision(long accuracy) {
+        return accuracy == 32L    ? 1L
+               : accuracy == 64L  ? 2L
+               : accuracy == 128L ? 3L
+                                  : throw exception::UserError("packing=ieee: only supports accuracy=32, 64 and 128");
     }
 
     void fill(const repres::Representation*, grib_info& info) const override {
         Packing::fill(info, CODES_UTIL_PACKING_TYPE_IEEE);
+
+        if (defineAccuracy_) {
+            info.extra_set("precision", precision(accuracy_));
+        }
     }
 
     void set(const repres::Representation*, grib_handle* handle) const override {
         Packing::set(handle, gridded() ? "grid_ieee" : "spectral_ieee");
+
+        if (defineAccuracy_) {
+            GRIB_CALL(codes_set_long(handle, "precision", precision(accuracy_)));
+        }
     }
 };
 
@@ -250,6 +231,7 @@ struct Simple : Packing {
     void fill(const repres::Representation*, grib_info& info) const override {
         Packing::fill(info, gridded() ? CODES_UTIL_PACKING_TYPE_GRID_SIMPLE : CODES_UTIL_PACKING_TYPE_SPECTRAL_SIMPLE);
     }
+
     void set(const repres::Representation*, grib_handle* handle) const override {
         Packing::set(handle, gridded() ? "grid_simple" : "spectral_simple");
     }
@@ -282,6 +264,7 @@ struct SecondOrder : Packing {
 
         Packing::fill(info, CODES_UTIL_PACKING_TYPE_GRID_SECOND_ORDER);
     }
+
     void set(const repres::Representation* repres, grib_handle* handle) const override {
         if (!check(repres)) {
             simple_.set(repres, handle);

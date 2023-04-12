@@ -82,16 +82,13 @@ public:
 protected:
     // -- Members
 
-    long bitsPerValue_;
+    long accuracy_;
     long edition_;
     std::string packing_;
-    long precision_;
 
-    bool defineBitsPerValue_;
-    bool defineBitsPerValueBeforePacking_;
+    bool defineAccuracy_;
     bool defineEdition_;
     bool definePacking_;
-    bool definePrecision_;
 
     // -- Methods
 
