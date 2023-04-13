@@ -209,18 +209,10 @@ struct IEEE : Packing {
 
     void fill(const repres::Representation*, grib_info& info) const override {
         Packing::fill(info, CODES_UTIL_PACKING_TYPE_IEEE);
-
-        if (defineAccuracy_) {
-            info.extra_set("precision", precision(accuracy_));
-        }
     }
 
     void set(const repres::Representation*, grib_handle* handle) const override {
         Packing::set(handle, gridded() ? "grid_ieee" : "spectral_ieee");
-
-        if (defineAccuracy_) {
-            GRIB_CALL(codes_set_long(handle, "precision", precision(accuracy_)));
-        }
     }
 };
 
