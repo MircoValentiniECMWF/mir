@@ -5,4 +5,4 @@ packingType=spectral_complex,param=vo_d.grib1
 # grib_get
 packingType=grid_second_order
 edition=1
-bitsPerValue=16
+accuracy=16

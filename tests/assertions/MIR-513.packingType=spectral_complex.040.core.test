@@ -6,4 +6,4 @@ $MIR_CONFIG_GRIB_OUTPUT=grib-output-ii.yaml
 # grib_get
 packingType=grid_ccsds
 edition=2
-bitsPerValue=16
+accuracy=16
