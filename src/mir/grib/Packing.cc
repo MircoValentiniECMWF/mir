@@ -227,12 +227,16 @@ struct Simple : Packing {
     void set(const repres::Representation*, grib_handle* handle) const override {
         Packing::set(handle, gridded() ? "grid_simple" : "spectral_simple");
     }
+
+    void definePacking(bool force) { definePacking_ = force; }
 };
 
 
 struct SecondOrder : Packing {
     SecondOrder(const std::string& name, const param::MIRParametrisation& param) :
-        Packing(name, param), simple_(name, param) {}
+        Packing(name, param), simple_(name, param) {
+        simple_.definePacking(true);
+    }
 
     Simple simple_;
 
