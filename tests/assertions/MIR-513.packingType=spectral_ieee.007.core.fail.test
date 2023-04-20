@@ -1,0 +1,8 @@
+# mars
+packingType=spectral_ieee.grib2
+# mir
+--packing=av --accuracy=128
+# grib_get
+packingType=spectral_ieee
+edition=2
+accuracy=128
